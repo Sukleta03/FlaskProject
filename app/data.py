@@ -15,7 +15,7 @@ def student_func(a):
 
 
 def course_func():
-    return ["math", "Art",
+    return ["Math", "Art",
            "English", "Music",
            "History", "Geography",
            "Swimming", "Science",
@@ -37,7 +37,7 @@ def group_func(num):
 
 def student_generator(group_list, num):
     first_num = 0
-    last_num = random.randint(10, 29)
+    last_num = random.randint(10, 30)
     group = 0
     i = 0
     student_list = student_func(num)
@@ -46,7 +46,7 @@ def student_generator(group_list, num):
             yield i, student, group_list[group]
             i += 1
         first_num = last_num
-        last_num += random.randint(9, 29)
+        last_num += random.randint(10, 30)
         group += 1
     if first_num < num:
         for student in student_list[first_num:]:
@@ -56,5 +56,4 @@ def student_generator(group_list, num):
 
 
 def random_courses():
-    num_list = [random.randint(0, 9) for i in range(random.randint(1, 3))]
-    return num_list
+    return random.sample(range(0, 9), random.randint(1, 3))

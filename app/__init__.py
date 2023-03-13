@@ -1,10 +1,13 @@
 from flask import Flask
 
-from app.models import StudentModel, Session, GroupModel
 
+def create_app(config):
+    app = Flask(__name__, instance_relative_config=False)
 
-def create_app():
-    app = Flask(__name__)
+    if config == 'main':
+        app.config.from_object('config.MainConfig')
+    elif config == 'test':
+        app.config.from_object('config.TestConfig')
 
     from config import MainConfig
     app.config.from_object(MainConfig)
@@ -21,6 +24,7 @@ def create_app():
     except:
         pass
 
-    from app.view import pages_blueprint
-    app.register_blueprint(pages_blueprint)
+    from app.routes import api
+    api.init_app(app)
+
     return app

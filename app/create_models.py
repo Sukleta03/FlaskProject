@@ -32,3 +32,4 @@ def fill_data(engine):
         session.commit()
     session.close()
 
+

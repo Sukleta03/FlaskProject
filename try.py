@@ -1,52 +1,36 @@
-from app.data import student_func, group_func, course_func, random_courses
+# 1
+# select groups.group_name , count(students.group_name)
+# from groups
+# left join students on groups.group_name = students.group_name
+# group by groups.group_name
+# order by count(students.group_name) asc
+# limit 1;
 
-name = student_func(200)
-group = group_func(10)
-course = course_func()
+#2
+# select students.first_name,students.last_name, courses.course_name from student_course
+# join courses on student_course.course_id=courses.course_id
+# join students on student_course.student_id=students.student_id
+# where course_name = 'math';
 
-
-class Student(object):
-
-    def __init__(self, first_name, last_name, group):
-        self.first_name = first_name
-        self.last_neme = last_name
-        self.group = group
-
-    courses_list = random_courses(course_func())
-
-# firts = ['dima', 'anton']
-# last = ['sukleta', 'subota']
-# group = ['ПЕ-211', 'РА-203']
+# 3
+# insert into  students (student_id, first_name, last_name, group_name)
+# values (255, 'dima', 'sukleta', 'LC-13');
 
 
-new_student = Student(first_name='dima', last_name='sukleta', group="ПЕ-211")
+# 4
 
-students_list = []
-for i in range(2):
-    first_name, lasy_name = name.split(" ")
-    new_student = Student(first_name=first_name[i], last_name=last_name[i], group=group[i])
-    students_list.append(new_student)
+# 5
+# insert into student_course (student_id, course_id)
+# select students.student_id, courses.course_id
+# from students, courses
+# where students.student_id = '255'
+# and courses.course_name in ('Math', 'Science');
 
-for j, student in enumerate(students_list):
-    print(students_list[j].first_name)
-    print(students_list[j].last_neme)
-    print(students_list[j].group)
-    print(students_list[j].courses_list)
-
-
-
-# class StudentGroup(Base):
-#     __tablename__ = 'student_group'
-#
-#     id = Column(String, primary_key=True)
-#     student_id = Column(Integer, ForeignKey('students.student_id'), primary_key=True)
-#     group_id = Column(Integer, ForeignKey('groups.group_id'), primary_key=True)
-#
-#     student = relationship("StudentModel", backref=backref("student_group", cascade="all"))
-#     group = relationship("GroupModel", backref=backref("student_group", cascade="all"))
-#
-#     def __init__(self, student=None, group=None):
-#         self.id = uuid.uuid4().hex
-#         self.student = student
-#         self.group = group
+# 6
+# delete from student_course
+# where student_course.student_id in (
+# select * from (select students.student_id from student_course
+# 		inner join students on student_course.student_id = students.student_id
+# 		inner join courses on student_course.course_id = courses.course_id
+# 		where students.student_id = 200 and courses.course_name = 'Art') as subquery);
 
