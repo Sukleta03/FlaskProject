@@ -47,12 +47,14 @@ def add_student_to_table(student_id, first_name, last_name, group_name):
                                group_name=group_name)
     session.add(new_student)
     session.commit()
+    return student_id, first_name, last_name, group_name
 
 
 def delete_student_by_id(student_id):
     session.query(StudentCourse).filter(StudentCourse.student_id == student_id).delete()
     session.query(StudentModel).filter(StudentModel.student_id == student_id).delete()
     session.commit()
+    return student_id
 
 
 def add_student_to_course(student_id, course_name_list):
@@ -62,6 +64,7 @@ def add_student_to_course(student_id, course_name_list):
 
         student.add_course(course)
     session.commit()
+    return student_id, course_name_list
 
 
 def delete_student_from_course(session, student_id, course_name):
@@ -85,3 +88,6 @@ def delete_student_from_course(session, student_id, course_name):
     ).delete(synchronize_session=False)
 
     session.commit()
+    return student_id, course_name
+
+

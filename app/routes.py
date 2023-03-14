@@ -26,8 +26,8 @@ class StudentsFromCourse(Resource):
 class DeleteStudent(Resource):
     def get(self):
         student_id = request.args.get('student_id')
-        delete_student_by_id(student_id)
-        return {student_id: 'Was deleted'}
+        result = delete_student_by_id(student_id)
+        return {result: 'Was deleted'}
 
 
 class AddStudent(Resource):
@@ -37,18 +37,18 @@ class AddStudent(Resource):
         last_name = request.args.get('last_name')
         group_name = request.args.get('group_name')
         try:
-            add_student_to_table(student_id, first_name, last_name, group_name)
+            result = add_student_to_table(student_id, first_name, last_name, group_name)
+            return {'new_student': result}
         except:
             return {'new_student': 'Is already exist or validation failed'}
-        return {'new_student': [student_id, first_name, last_name, group_name]}
 
 
 class AddStudentToCourse(Resource):
     def get(self):
         student_id = request.args.get('student_id')
         course_name = request.args.get('course_name').split(' ')
-        add_student_to_course(student_id, course_name)
-        return {student_id: course_name}
+        result = add_student_to_course(student_id, course_name)
+        return {result[0]: [course for course in result[1]]}
 
 
 class DeleteFromCourse(Resource):
@@ -57,8 +57,8 @@ class DeleteFromCourse(Resource):
 
         student_id = request.args.get('student_id')
         course_name = request.args.get('course_name')
-        delete_student_from_course(session, student_id, course_name)
-        return {student_id: course_name}
+        result = delete_student_from_course(session, student_id, course_name)
+        return {result[0]: result[1]}
 
 
 api = Api()
