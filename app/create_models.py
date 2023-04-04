@@ -1,12 +1,13 @@
-from app.models import StudentModel, CourseModel, GroupModel, Session
+from app.models import StudentModel, CourseModel, GroupModel
 from app.data import course_func, group_func, student_generator, random_courses
+from . import db
 
 
-def fill_data(engine):
+def fill_data():
     group_list = group_func(10)
     course_objects_list = []
     course_list = course_func()
-    with Session(bind=engine) as session:
+    with db.session() as session:
         for i, course in enumerate(course_list):
             new_course = CourseModel(course_id=i+1,
                                      course_name=course,

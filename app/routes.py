@@ -1,16 +1,14 @@
 from flask import request
 from flask_restful import Api, Resource
 from app.orm_querys import get_student, \
-    get_students, update_student, \
-    get_group, update_group, delete_group_by_id,\
-    get_groups, add_group_to_table,\
-    get_course_by_id, update_course, delete_course, \
-    get_courses, add_course_to_table, \
-    get_groups_with_less_students_count, \
-    students_from_course_by_name, \
-    add_student_to_table, \
-    delete_student_by_id, \
-    add_student_to_course, delete_student_from_course
+    get_students, update_student, get_group,\
+    update_group, delete_group_by_id,\
+    get_groups, add_group_to_table, get_course_by_id,\
+    update_course, delete_course, get_courses,\
+    add_course_to_table, get_groups_with_less_students_count, \
+    students_from_course, add_student_to_table, \
+    delete_student_by_id, add_student_to_course, \
+    delete_student_from_course
 
 
 class Student(Resource):
@@ -56,7 +54,7 @@ class Group(Resource):
     def get(self, group_id: int):
         group_id = group_id
         result = get_group(group_id)
-        return {'group_id': result.group_id, 'group_name': result.group_name}
+        return {'group_id': result[0], 'group_name': result[1]}
 
     def put(self, group_id: int):
         group_id = group_id
@@ -74,8 +72,12 @@ class Group(Resource):
 
 
 class Groups(Resource):
-    def get(self):
-        result = get_groups()
+    def get(self, student_count: int = None):
+        max_student_in_group = student_count
+        if max_student_in_group is None:
+            result = get_groups()
+        else:
+            result = get_groups_with_less_students_count(max_student_in_group)
         return result
 
     def post(self):
@@ -115,19 +117,10 @@ class Courses(Resource):
         return {'new_course': result}
 
 
-class GroupWithLessStudents(Resource):
-    def get(self):
-        max_student_in_group = request.args.get('student_count')
-        result = get_groups_with_less_students_count(max_student_in_group)
-        data = [{'group_name': row[0], 'student_count': row[1]} for row in result]
-        return data
-
-
 class StudentCourse(Resource):
-    def get(self):
+    def get(self, course_id: int):
         # get students by there course
-        course_name = request.args.get('course_name')
-        result = students_from_course_by_name(course_name)
+        result = students_from_course(course_id)
         data = [{'first_name': row[0], 'last_name': row[1], 'course_name': row[2]} for row in result]
         return data
 
@@ -137,12 +130,8 @@ class StudentCourse(Resource):
         result = add_student_to_course(student_id, course_name)
         return {result[0]: [course for course in result[1]]}
 
-    def delete(self):
-        from app.orm_querys import session
-
-        student_id = request.args.get('student_id')
-        course_name = request.args.get('course_name')
-        result = delete_student_from_course(session, student_id, course_name)
+    def delete(self, course_id: int, student_id: int):
+        result = delete_student_from_course(student_id, course_id)
         return {result[0]: result[1]}
 
 
@@ -150,9 +139,11 @@ api = Api()
 api.add_resource(Student, '/api/v1/student/<int:student_id>')
 api.add_resource(Students, '/api/v1/students')
 api.add_resource(Group, '/api/v1/group/<int:group_id>')
-api.add_resource(Groups, '/api/v1/groups')
+api.add_resource(Groups, '/api/v1/groups', '/api/v1/groups/<int:student_count>')
 api.add_resource(Course, '/api/v1/course/<int:course_id>')
 api.add_resource(Courses, '/api/v1/courses')
-api.add_resource(GroupWithLessStudents, '/api/v1/group_with_less_students')
-api.add_resource(StudentCourse, '/api/v1/student_course')
+api.add_resource(StudentCourse, '/api/v1/course/<course_id>/students',
+                                '/api/v1/course/students',
+                                '/api/v1/course/<course_id>/students/<student_id>')
+
 

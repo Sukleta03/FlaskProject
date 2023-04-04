@@ -1,11 +1,9 @@
-from sqlalchemy.orm import sessionmaker, declarative_base, relationship, backref
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Column, String, Integer, ForeignKey
-
-Base = declarative_base()
-Session = sessionmaker()
+from . import db
 
 
-class StudentCourse(Base):
+class StudentCourse(db.Model):
     # many-to-many relationship
     __tablename__ = 'student_course'
 
@@ -20,7 +18,7 @@ class StudentCourse(Base):
         self.course = course
 
 
-class GroupModel(Base):
+class GroupModel(db.Model):
     __tablename__ = 'groups'
 
     group_id = Column(Integer(), primary_key=True)
@@ -31,7 +29,7 @@ class GroupModel(Base):
                 f"group_name={self.group_name!r}"
 
 
-class StudentModel(Base):
+class StudentModel(db.Model):
     __tablename__ = 'students'
 
     student_id = Column(Integer(),  primary_key=True)
@@ -57,7 +55,7 @@ class StudentModel(Base):
                f" group_name={self.group_name!r},"
 
 
-class CourseModel(Base):
+class CourseModel(db.Model):
     __tablename__ = 'courses'
 
     course_id = Column(Integer(), primary_key=True)

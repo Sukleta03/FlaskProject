@@ -72,6 +72,13 @@ class TestApi:
         assert response.status_code == 200
         assert [{'group_id': 1, 'group_name': 'PE-21'}] == response.json
 
+    @patch('app.routes.get_groups_with_less_students_count')
+    def test_groups_request_2(self, mock_response_func, client):
+        mock_response_func.return_value = [{'group_name': 'PE-21', 'student_count': 14}]
+        response = client.get('/api/v1/groups/15')
+        assert response.status_code == 200
+        assert [{'group_name': 'PE-21', 'student_count': 14}] == response.json
+
     @patch('app.routes.add_group_to_table')
     def test_group_add(self, mock_response_func, client):
         mock_response_func.return_value = ['1', 'PE-21']
@@ -110,35 +117,28 @@ class TestApi:
     @patch('app.routes.add_course_to_table')
     def test_course_add(self, mock_response_func, client):
         mock_response_func.return_value = ['1', 'Math']
-        response = client.post('/api/v1/courses?course_id=1&course_name=Math')
+        response = client.post('/api/v1/courses?course_id=1&course_name=Math&description=description+will+be+soon')
         assert response.status_code == 200
         assert {'new_course': ['1', 'Math']} == response.json
 
-    @patch('app.routes.students_from_course_by_name')
+    @patch('app.routes.students_from_course')
     def test_students_by_course_request(self, mock_response_func, client):
         mock_response_func.return_value = [('Dima', 'Sukleta', 'Math')]
-        response = client.get('/api/v1/student_course?course_name=Math')
+        response = client.get('/api/v1/course/1/students')
         assert response.status_code == 200
         assert [{'first_name': 'Dima', 'last_name': 'Sukleta', 'course_name': 'Math'}] == response.json
 
     @patch('app.routes.add_student_to_course')
     def test_add_to_course(self, mock_response, client):
         mock_response.return_value = ('255', ['Math', 'English'])
-        response = client.put('/api/v1/student_course?student_id=255&course_name=Math+English')
+        response = client.put('/api/v1/course/students?student_id=199&course_name=Math+English')
         assert response.status_code == 200
         assert {'255': ['Math', 'English']} == response.json
 
     @patch('app.routes.delete_student_from_course')
     def test_delete_from_course(self, mock_response, client):
         mock_response.return_value = ('255', 'Math')
-        response = client.delete('/api/v1/student_course?student_id=255&course_name=Math')
+        response = client.delete('/api/v1/course/1/students/255')
         assert response.status_code == 200
         assert {'255': 'Math'} == response.json
-
-    @patch('app.routes.get_groups_with_less_students_count')
-    def test_group_request(self, mock_response_func, client):
-        mock_response_func.return_value = [('PE-21', 14)]
-        response = client.get('/api/v1/group_with_less_students?student_count=15')
-        assert response.status_code == 200
-        assert [{'group_name': 'PE-21', 'student_count': 14}] == response.json
 
