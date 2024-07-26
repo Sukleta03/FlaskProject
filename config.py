@@ -9,4 +9,4 @@ class TestConfig(Base):
 
 class MainConfig(Base):
     #main config
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:135636@localhost/postgres'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:635636@localhost/sukletadb'

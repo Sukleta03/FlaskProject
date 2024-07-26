@@ -9,6 +9,10 @@ class TestApi:
         app = create_app('test')
         return app
 
+    @pytest.fixture()
+    def client(self, app):
+        return app.test_client()
+
     @patch('app.routes.get_student')
     def test_student_request(self, mock_response_func, client):
         mock_response_func.return_value = ['255', 'Dima', 'Sukleta', 'PE-21']
@@ -141,4 +145,3 @@ class TestApi:
         response = client.delete('/api/v1/course/1/students/255')
         assert response.status_code == 200
         assert {'255': 'Math'} == response.json
-
