@@ -1,5 +1,5 @@
-[//]: # (https://dbdiagram.io/d/66a6ab9b8b4bb5230e9175a4)
-
+/// dbdiagram ///
+https://dbdiagram.io/d/66a6ab9b8b4bb5230e9175a4
 
 Table groups {
   group_id integer [primary key]
