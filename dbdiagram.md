@@ -1,0 +1,29 @@
+[//]: # (https://dbdiagram.io/d/66a6ab9b8b4bb5230e9175a4)
+
+
+Table groups {
+  group_id integer [primary key]
+  group_name varchar [unique]
+}
+
+Table students {
+  student_id integer [primary key]
+  group_name varchar 
+  first_name varchar
+  last_name varchar
+}
+
+Table courses {
+  course_id integer [primary key]
+  course_name varchar [unique]
+  description varchar
+}
+
+Table student_course {
+  student_id integer [primary key]
+  course_id integer [primary key]
+}
+
+Ref: students.group_name > groups.group_name // many-to-one
+Ref: student_course.student_id > students.student_id // many-to-many
+Ref: student_course.course_id > courses.course_id // many-to-many
